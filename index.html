@@ -1,19 +1,26 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="hi">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CleanCodeHub</title>
     <style>
-        body { font-family: sans-serif; text-align: center; padding: 50px; background-color: #f4f4f9; }
-        h1 { color: #333; }
-        p { color: #666; }
+        body { font-family: sans-serif; padding: 20px; text-align: center; }
+        textarea { width: 90%; height: 200px; margin-bottom: 10px; }
     </style>
 </head>
 <body>
     <h1>Welcome to CleanCodeHub</h1>
-    <p>यह हमारा नया क्लीन कोड टूल है, जो आपके कोड को बेहतर बनाने में मदद करेगा।</p>
-<button onclick="alert('टूल पर काम चल रहा है!')">अभी आज़माएं</button>
+    <p>अपना कोड यहाँ पेस्ट करें और क्लीन करें:</p>
+    <textarea id="codeInput" placeholder="अपना कोड यहाँ लिखें..."></textarea><br>
+    <button onclick="cleanCode()">क्लीन करें</button>
+    <p id="result"></p>
 
+    <script>
+        function cleanCode() {
+            let input = document.getElementById('codeInput').value;
+            // यहाँ आप अपना असली लॉजिक लगा सकते हैं
+            document.getElementById('result').innerText = "कोड प्रोसेस हो गया: " + input.trim();
+        }
+    </script>
 </body>
 </html>
