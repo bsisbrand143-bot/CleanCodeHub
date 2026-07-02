@@ -4,56 +4,69 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CleanCodeHub</title>
+    <title>CleanCodeHub - Pro</title>
     <style>
         body { font-family: sans-serif; background-color: #f8f9fa; display: flex; flex-direction: column; align-items: center; padding: 20px; transition: background 0.3s; }
-        h1 { color: #202124; }
-        .controls { display: flex; gap: 10px; margin-bottom: 20px; }
-        textarea { width: 100%; max-width: 700px; height: 200px; padding: 20px; border-radius: 20px; border: 1px solid #ddd; background-color: white; font-size: 16px; outline: none; }
+        .lang-group, .action-group { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; justify-content: center; }
+        button { padding: 10px 20px; border-radius: 20px; border: 2px solid #1a73e8; background: white; color: #1a73e8; font-weight: bold; cursor: pointer; }
+        button.active { background-color: #1a73e8; color: white; }
+        textarea { width: 100%; max-width: 700px; height: 200px; padding: 20px; border-radius: 20px; border: 1px solid #ddd; }
         #result { width: 100%; max-width: 700px; padding: 20px; background-color: #eee; border-radius: 20px; margin-top: 20px; white-space: pre-wrap; font-family: monospace; }
-        button { padding: 10px 20px; border-radius: 20px; border: none; cursor: pointer; background-color: #1a73e8; color: white; }
         body.dark-mode { background-color: #121212; color: white; }
-        body.dark-mode #result { background-color: #333; }
     </style>
 </head>
 <body>
 
     <h1>CleanCodeHub</h1>
 
-    <div class="controls">
-        <button onclick="toggleDarkMode()">डार्क मोड</button>
-        <button onclick="cleanCode()">क्लीन करें</button>
-        <button onclick="copyCode()" style="background-color: #34a853;">कॉपी करें</button>
+    <!-- भाषा के बटन ऊपर -->
+    <div class="lang-group">
+        <button onclick="selectLang(this, 'JSON')">JSON</button>
+        <button onclick="selectLang(this, 'HTML')">HTML</button>
+        <button onclick="selectLang(this, 'CSS')">CSS</button>
+        <button onclick="selectLang(this, 'Python')">Python</button>
     </div>
 
-    <textarea id="codeInput" placeholder="अपना बिगड़ा हुआ कोड यहाँ डालें..."></textarea>
-    <pre id="result">क्लीन कोड यहाँ दिखेगा...</pre>
+    <textarea id="codeInput" placeholder="अपना कोड यहाँ डालें..."></textarea>
+
+    <!-- एक्शन बटन नीचे -->
+    <div class="action-group" style="margin-top: 20px;">
+        <button onclick="toggleDarkMode()">डार्क मोड</button>
+        <button onclick="cleanCode()" style="background-color: #1a73e8; color: white;">क्लीन करें</button>
+        <button onclick="copyCode()" style="background-color: #34a853; color: white;">कॉपी करें</button>
+    </div>
+
+    <pre id="result">रिजल्ट यहाँ दिखेगा...</pre>
 
     <script>
-        function toggleDarkMode() {
-            document.body.classList.toggle('dark-mode');
+        let selectedLang = 'JSON';
+
+        function selectLang(btn, lang) {
+            document.querySelectorAll('.lang-group button').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            selectedLang = lang;
         }
+
+        function toggleDarkMode() { document.body.classList.toggle('dark-mode'); }
 
         function cleanCode() {
             let input = document.getElementById('codeInput').value;
-            if (!input.trim()) {
-                alert("भाई, कुछ कोड तो लिखो!");
-                return;
+            if (!input.trim()) { alert("पहले कोड तो डालो भाई!"); return; }
+            
+            let result = "";
+            if (selectedLang === 'JSON') {
+                try {
+                    let obj = JSON.parse(input);
+                    result = JSON.stringify(obj, null, 4);
+                } catch(e) { result = "Error: गलत JSON है!"; }
+            } else {
+                result = input.split('\n').map(l => l.trim()).filter(l => l !== "").join('\n');
             }
-            let cleaned = input.split('\n')
-                               .map(line => line.trim())
-                               .filter(line => line !== "")
-                               .join('\n');
-            document.getElementById('result').textContent = cleaned;
+            document.getElementById('result').textContent = result;
         }
 
         function copyCode() {
-            let resultText = document.getElementById('result').textContent;
-            if (resultText === "क्लीन कोड यहाँ दिखेगा..." || resultText === "") {
-                alert("पहले कोड क्लीन तो करो!");
-                return;
-            }
-            navigator.clipboard.writeText(resultText);
+            navigator.clipboard.writeText(document.getElementById('result').textContent);
             alert("कॉपी हो गया!");
         }
     </script>
