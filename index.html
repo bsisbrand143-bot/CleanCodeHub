@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="hi">
 <head>
@@ -6,18 +7,24 @@
     <title>Clean Code Hub Pro</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
     <style>
-        body { font-family: 'Segoe UI', sans-serif; background: #0f0f0f; color: #fff; margin: 0; padding: 20px; display: flex; flex-direction: column; align-items: center; }
-        .container { width: 100%; max-width: 900px; }
-        h1 { text-align: center; }
-        textarea { width: 100%; height: 250px; background: #1a1a1a; color: #fff; border: 1px solid #444; padding: 15px; border-radius: 10px; font-family: 'Courier New', monospace; font-size: 14px; resize: vertical; }
+        /* मोबाइल और कंप्यूटर दोनों के लिए परफेक्ट डिज़ाइन */
+        body { font-family: 'Segoe UI', sans-serif; background: #0f0f0f; color: #fff; margin: 0; padding: 15px; display: flex; flex-direction: column; align-items: center; }
+        .container { width: 100%; max-width: 1000px; }
+        h1 { text-align: center; margin-bottom: 20px; font-size: 24px; }
+        
+        textarea { width: 100%; height: 300px; background: #1a1a1a; color: #fff; border: 1px solid #444; padding: 15px; border-radius: 10px; font-family: 'Courier New', monospace; font-size: 14px; resize: vertical; box-sizing: border-box; }
+        
         .toolbar { display: flex; flex-wrap: wrap; gap: 10px; margin: 20px 0; justify-content: center; }
-        select, button { padding: 12px 20px; border-radius: 8px; border: none; cursor: pointer; font-weight: bold; }
+        select, button { padding: 12px 18px; border-radius: 8px; border: none; cursor: pointer; font-weight: bold; }
         select { background: #333; color: white; }
         button { background: #4a90e2; color: white; transition: 0.3s; }
-        button:hover { background: #357abd; }
-        .btn-dark { background: #555; }
-        .result-box { position: relative; background: #1a1a1a; padding: 20px; border-radius: 10px; border: 1px solid #444; margin-top: 20px; }
-        pre { overflow-x: auto; }
+        
+        .result-box { position: relative; background: #1a1a1a; padding: 20px; border-radius: 10px; border: 1px solid #444; margin-top: 20px; min-height: 100px; }
+        
+        /* लोडिंग एनीमेशन */
+        .spinner { border: 4px solid #333; border-top: 4px solid #4a90e2; border-radius: 50%; width: 25px; height: 25px; animation: spin 1s linear infinite; margin: 10px auto; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        
         .action-btns { position: absolute; top: 10px; right: 10px; display: flex; gap: 5px; }
         .mini-btn { background: #444; padding: 5px 10px; font-size: 12px; border-radius: 4px; cursor: pointer; }
     </style>
@@ -26,22 +33,12 @@
 
 <div class="container">
     <h1>Clean Code Hub Pro</h1>
-    
-    <!-- टाइपिंग और एडिटिंग एरिया -->
-    <textarea id="codeInput" placeholder="यहाँ अपना कोड पेस्ट करें या टाइप करें..."></textarea>
+    <textarea id="codeInput" placeholder="अपना कोड यहाँ लिखें या पेस्ट करें..."></textarea>
     
     <div class="toolbar">
-        <select id="sourceLang">
-            <option value="JavaScript">JavaScript</option><option value="Python">Python</option>
-            <option value="Java">Java</option><option value="C++">C++</option><option value="HTML">HTML</option>
-        </select>
-        <span>➡</span>
-        <select id="targetLang">
-            <option value="Python">Python</option><option value="JavaScript">JavaScript</option>
-            <option value="Java">Java</option><option value="C++">C++</option>
-        </select>
+        <select id="sourceLang"><option>JavaScript</option><option>Python</option><option>Java</option><option>C++</option></select>
+        <select id="targetLang"><option>Python</option><option>JavaScript</option><option>Java</option><option>C++</option></select>
         <button onclick="convertCode()">🚀 सर्च / कन्वर्ट</button>
-        <button class="btn-dark" onclick="toggleDarkMode()">🌙 डार्क/लाइट</button>
     </div>
 
     <div class="result-box">
@@ -49,31 +46,33 @@
             <span class="mini-btn" onclick="copyResult()">Copy</span>
             <span class="mini-btn" onclick="clearAll()">Clear</span>
         </div>
-        <pre><code id="result" class="language-javascript">यहाँ आपका रिजल्ट दिखेगा...</code></pre>
+        <pre><code id="result" class="language-javascript">यहाँ आपका कोड आएगा...</code></pre>
     </div>
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
 <script>
-    function toggleDarkMode() { document.body.style.background = (document.body.style.background === "white") ? "#0f0f0f" : "white"; document.body.style.color = (document.body.style.color === "black") ? "white" : "black"; }
-    
     async function convertCode() {
         let res = document.getElementById('result');
-        let code = document.getElementById('codeInput').value;
-        let to = document.getElementById('targetLang').value;
-        res.textContent = "AI प्रोसेस कर रहा है...";
+        res.innerHTML = '<div class="spinner"></div><p style="text-align:center;">AI कोडिंग कर रहा है...</p>';
         
-        const response = await fetch('/api/convert', {
-            method: 'POST',
-            body: JSON.stringify({ code: code, targetLang: to })
-        });
-        const data = await response.json();
-        res.textContent = data.result;
-        Prism.highlightAll();
+        try {
+            const response = await fetch('/api/convert', {
+                method: 'POST',
+                body: JSON.stringify({ 
+                    code: document.getElementById('codeInput').value, 
+                    targetLang: document.getElementById('targetLang').value 
+                })
+            });
+            const data = await response.json();
+            res.textContent = data.result;
+            Prism.highlightAll();
+        } catch (e) {
+            res.textContent = "Error: API से कनेक्ट नहीं हो पाया।";
+        }
     }
-
     function copyResult() { navigator.clipboard.writeText(document.getElementById('result').textContent); alert("कॉपी हो गया!"); }
-    function clearAll() { document.getElementById('codeInput').value = ""; document.getElementById('result').textContent = ""; }
+    function clearAll() { document.getElementById('codeInput').value = ""; document.getElementById('result').textContent = "यहाँ आपका कोड आएगा..."; }
 </script>
 </body>
 </html>
