@@ -1,35 +1,60 @@
 
-!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="hi">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CleanCodeHub</title>
     <style>
-        body { font-family: 'Segoe UI', sans-serif; background-color: #f8f9fa; margin: 0; display: flex; flex-direction: column; align-items: center; padding: 20px; transition: background 0.3s; }
+        body { font-family: sans-serif; background-color: #f8f9fa; display: flex; flex-direction: column; align-items: center; padding: 20px; transition: background 0.3s; }
         h1 { color: #202124; }
-        textarea { width: 100%; max-width: 700px; height: 200px; padding: 20px; border: none; border-radius: 24px; background-color: #ffffff; box-shadow: 0 4px 12px rgba(0,0,0,0.1); font-size: 16px; outline: none; margin-bottom: 20px; }
-        button { padding: 10px 24px; border-radius: 20px; border: none; background-color: #1a73e8; color: white; font-weight: 600; cursor: pointer; margin: 5px; }
-        button:hover { background-color: #1557b0; }
-        body.dark-mode { background-color: #131314; color: #e3e3e3; }
-        body.dark-mode textarea { background-color: #1e1f20; color: #e3e3e3; box-shadow: none; }
-        body.dark-mode h1 { color: #e3e3e3; }
+        .controls { display: flex; gap: 10px; margin-bottom: 20px; }
+        textarea { width: 100%; max-width: 700px; height: 200px; padding: 20px; border-radius: 20px; border: 1px solid #ddd; background-color: white; font-size: 16px; outline: none; }
+        #result { width: 100%; max-width: 700px; padding: 20px; background-color: #eee; border-radius: 20px; margin-top: 20px; white-space: pre-wrap; font-family: monospace; }
+        button { padding: 10px 20px; border-radius: 20px; border: none; cursor: pointer; background-color: #1a73e8; color: white; }
+        body.dark-mode { background-color: #121212; color: white; }
+        body.dark-mode #result { background-color: #333; }
     </style>
 </head>
 <body>
+
     <h1>CleanCodeHub</h1>
-    <div>
+
+    <div class="controls">
         <button onclick="toggleDarkMode()">डार्क मोड</button>
         <button onclick="cleanCode()">क्लीन करें</button>
+        <button onclick="copyCode()" style="background-color: #34a853;">कॉपी करें</button>
     </div>
-    <textarea id="codeInput" placeholder="अपना कोड यहाँ लिखें..."></textarea>
-    <p id="result"></p>
+
+    <textarea id="codeInput" placeholder="अपना बिगड़ा हुआ कोड यहाँ डालें..."></textarea>
+    <pre id="result">क्लीन कोड यहाँ दिखेगा...</pre>
 
     <script>
-        function toggleDarkMode() { document.body.classList.toggle('dark-mode'); }
+        function toggleDarkMode() {
+            document.body.classList.toggle('dark-mode');
+        }
+
         function cleanCode() {
             let input = document.getElementById('codeInput').value;
-            document.getElementById('result').innerText = "रिजल्ट: " + input.trim();
+            if (!input.trim()) {
+                alert("भाई, कुछ कोड तो लिखो!");
+                return;
+            }
+            let cleaned = input.split('\n')
+                               .map(line => line.trim())
+                               .filter(line => line !== "")
+                               .join('\n');
+            document.getElementById('result').textContent = cleaned;
+        }
+
+        function copyCode() {
+            let resultText = document.getElementById('result').textContent;
+            if (resultText === "क्लीन कोड यहाँ दिखेगा..." || resultText === "") {
+                alert("पहले कोड क्लीन तो करो!");
+                return;
+            }
+            navigator.clipboard.writeText(resultText);
+            alert("कॉपी हो गया!");
         }
     </script>
 </body>
