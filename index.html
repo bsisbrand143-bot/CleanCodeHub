@@ -1,60 +1,48 @@
+<style>
+    /* Gemini जैसा लुक */
+    body { 
+        font-family: 'Google Sans', Roboto, sans-serif; 
+        background-color: #f8f9fa; 
+        margin: 0; 
+        display: flex; 
+        flex-direction: column; 
+        align-items: center; 
+        padding: 20px;
+        transition: background 0.3s;
+    }
+    
+    h1 { color: #202124; font-weight: 500; }
 
-DOCTYPE html>
-<html lang="hi">
-<head>
-    <meta charset="UTF-8">
-    <title>CleanCodeHub</title>
-    <style>
-        body { font-family: sans-serif; padding: 20px; text-align: center; }
-        textarea { width: 90%; height: 200px; margin-bottom: 10px; }
-    </style><!DOCTYPE html>
-<html lang="hi">
-<head>
-    <meta charset="UTF-8">
-    <title>CleanCodeHub</title>
-    <style>
-        body { font-family: sans-serif; padding: 20px; text-align: center; }
-        textarea { width: 90%; height: 200px; margin-bottom: 10px; }
-        /* डार्क मोड स्टाइल */
-        body.dark-mode { background-color: #121212; color: #ffffff; }
-        body.dark-mode textarea { background-color: #1e1e1e; color: #ffffff; border: 1px solid #333; }
-        body.dark-mode h1 { color: #bb86fc; }
-    </style>
-</head>
-<body>
-    <h1>Welcome to CleanCodeHub</h1>
-    <button onclick="toggleDarkMode()">डार्क मोड बदलें</button>
-    <p>अपना कोड यहाँ पेस्ट करें और क्लीन करें:</p>
-    <textarea id="codeInput" placeholder="अपना कोड यहाँ लिखें..."></textarea><br>
-    <button onclick="cleanCode()">क्लीन करें</button>
-    <p id="result"></p>
+    /* इनपुट एरिया */
+    textarea { 
+        width: 100%; 
+        max-width: 700px; 
+        height: 200px; 
+        padding: 20px; 
+        border: none; 
+        border-radius: 24px; 
+        background-color: #ffffff; 
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1); 
+        font-size: 16px;
+        outline: none;
+        margin-bottom: 20px;
+    }
 
-    <script>
-        function toggleDarkMode() {
-            document.body.classList.toggle('dark-mode');
-        }
-        function cleanCode() {
-            let input = document.getElementById('codeInput').value;
-            document.getElementById('result').innerText = "कोड प्रोसेस हो गया: " + input.trim();
-        }
-    </script>
-</body>
-</html>
+    /* बटन स्टाइल */
+    button { 
+        padding: 10px 24px; 
+        border-radius: 20px; 
+        border: none; 
+        background-color: #1a73e8; 
+        color: white; 
+        font-weight: 600; 
+        cursor: pointer;
+        margin: 5px;
+    }
+    button:hover { background-color: #1557b0; }
 
-</head>
-<body>
-    <h1>Welcome to CleanCodeHub</h1>
-    <p>अपना कोड यहाँ पेस्ट करें और क्लीन करें:</p>
-    <textarea id="codeInput" placeholder="अपना कोड यहाँ लिखें..."></textarea><br>
-    <button onclick="cleanCode()">क्लीन करें</button>
-    <p id="result"></p>
-
-    <script>
-        function cleanCode() {
-            let input = document.getElementById('codeInput').value;
-            // यहाँ आप अपना असली लॉजिक लगा सकते हैं
-            document.getElementById('result').innerText = "कोड प्रोसेस हो गया: " + input.trim();
-        }
-    </script>
-</body>
-</html>
+    /* डार्क मोड (Gemini स्टाइल) */
+    body.dark-mode { background-color: #131314; color: #e3e3e3; }
+    body.dark-mode textarea { background-color: #1e1f20; color: #e3e3e3; box-shadow: none; }
+    body.dark-mode h1 { color: #e3e3e3; }
+</style>
