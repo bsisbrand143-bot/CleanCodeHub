@@ -6,14 +6,13 @@
     <title>CleanCodeHub - Pro</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
     <style>
-        body { font-family: 'Segoe UI', sans-serif; background-color: #f4f4f9; padding: 20px; text-align: center; transition: 0.3s; }
+        body { font-family: sans-serif; background-color: #f4f4f9; padding: 20px; text-align: center; transition: 0.3s; }
         .toolbar { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-bottom: 20px; }
-        select, button { padding: 12px 20px; border-radius: 8px; border: none; cursor: pointer; font-weight: bold; }
+        select, button { padding: 10px 15px; border-radius: 8px; border: 1px solid #1a73e8; cursor: pointer; font-weight: bold; }
         button { background-color: #1a73e8; color: white; }
         textarea { width: 100%; max-width: 800px; height: 200px; padding: 15px; border-radius: 10px; border: 1px solid #ccc; font-family: monospace; }
-        #result-container { margin-top: 20px; text-align: left; max-width: 800px; margin: 20px auto; position: relative; }
-        #copyBtn { display: none; margin-top: 10px; background-color: #34a853; }
-        pre { border-radius: 10px; }
+        #result-container { margin-top: 20px; text-align: left; max-width: 800px; margin: 20px auto; }
+        #copyBtn { display: none; margin-top: 10px; background-color: #34a853; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; }
         body.dark-mode { background-color: #121212; color: white; }
     </style>
 </head>
@@ -22,12 +21,22 @@
     <h1>CleanCodeHub</h1>
 
     <div class="toolbar">
-        <select id="langSelect">
+        <select id="sourceLang">
             <option value="json">JSON</option>
-            <option value="html">HTML</option>
-            <option value="css">CSS</option>
             <option value="python">Python</option>
+            <option value="javascript">JavaScript</option>
+            <option value="cpp">C++</option>
+            <option value="java">Java</option>
         </select>
+        <span>में बदलें</span>
+        <select id="targetLang">
+            <option value="json">JSON</option>
+            <option value="python">Python</option>
+            <option value="javascript">JavaScript</option>
+            <option value="cpp">C++</option>
+            <option value="java">Java</option>
+        </select>
+        
         <button onclick="processCode('clean')">क्लीन</button>
         <button onclick="processCode('minify')">मिनीफाई</button>
         <button onclick="processCode('convert')">कन्वर्ट</button>
@@ -47,18 +56,19 @@
 
         function processCode(action) {
             let input = document.getElementById('codeInput').value;
-            let lang = document.getElementById('langSelect').value;
+            let src = document.getElementById('sourceLang').value;
+            let target = document.getElementById('targetLang').value;
             let res = document.getElementById('result');
             
-            if(!input.trim()) { alert("भाई, कोड तो डालो!"); return; }
+            if(!input.trim()) { alert("कोड तो डालो भाई!"); return; }
 
             let output = "";
             if(action === 'clean') {
                 output = input.split('\n').map(l => l.trim()).filter(l => l !== "").join('\n');
             } else if(action === 'minify') {
                 output = input.replace(/\s+/g, ' ').trim();
-            } else {
-                output = "कन्वर्ट फीचर जल्द ही अपडेट होगा!";
+            } else if(action === 'convert') {
+                output = `// ${src} से ${target} में बदलना बाकी है... \n// लॉजिक: ${input}`;
             }
 
             res.textContent = output;
