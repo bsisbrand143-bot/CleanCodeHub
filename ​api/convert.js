@@ -1,50 +1,29 @@
-module.exports = async function (req, res) {
-    if (req.method !== 'POST') {
-        return res.status(405).json({ error: 'Method Not Allowed' });
-    }
+import { OpenAI } from 'openai';
 
-    try {
-        const { code, targetLang } = req.body;
+const openai = new OpenAI({
+  apiKey: process.env.OPENAI_API_KEY,
+});
 
-        if (!code || !targetLang) {
-            return res.status(400).json({ error: 'Code and Target Language are required' });
-        }
+export default async function handler(req, res) {
+  if (req.method !== 'POST') {
+    return res.status(405).json({ error: 'Method not allowed' });
+  }
 
-        const apiKey = process.env.OPENAI_API_KEY;
-        if (!apiKey) {
-            return res.status(500).json({ error: 'Vercel सेटिंग्स में OPENAI_API_KEY नहीं मिला।' });
-        }
+  const { code, targetLang } = req.body;
 
-        const response = await fetch("https://api.openai.com/v1/chat/completions", {
-            method: "POST",
-            headers: { 
-                "Content-Type": "application/json", 
-                "Authorization": `Bearer ${apiKey}` 
-            },
-            body: JSON.stringify({
-                model: "gpt-3.5-turbo",
-                messages: [
-                    { 
-                        role: "system", 
-                        content: "You are an expert code converter. Automatically detect the source language and convert the code directly to the requested target language. Return ONLY the executable code, no markdown block ticks (```) or conversations." 
-                    },
-                    { 
-                        role: "user", 
-                        content: `Convert this code into ${targetLang}:\n\n${code}` 
-                    }
-                ]
-            })
-        });
+  try {
+    const response = await openai.chat.completions.create({
+      model: "gpt-3.5-turbo",
+      messages: [
+        { role: "system", content: `Convert the following code to ${targetLang}.` },
+        { role: "user", content: code }
+      ],
+    });
 
-        const data = await response.json();
-        
-        if (data.choices && data.choices[0]) {
-            return res.status(200).json({ result: data.choices[0].message.content });
-        } else {
-            return res.status(500).json({ error: 'OpenAI API से गलत जवाब मिला।', details: data });
-        }
+    res.status(200).json({ result: response.choices[0].message.content });
+  } catch (error) {
+    console.error('API Error:', error);
+    res.status(500).json({ error: 'API से कनेक्ट नहीं हो पाया।' });
+  }
+}
 
-    } catch (error) {
-        return res.status(500).json({ error: error.message });
-    }
-};
