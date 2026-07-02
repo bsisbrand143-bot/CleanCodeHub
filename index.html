@@ -1,85 +1,79 @@
-
 <!DOCTYPE html>
 <html lang="hi">
 <head>
     <meta charset="UTF-8">
-    <title>CleanCodeHub - Pro</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clean Code Hub Pro</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
     <style>
-        body { font-family: sans-serif; background-color: #f4f4f9; padding: 20px; text-align: center; transition: 0.3s; }
-        .toolbar { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-bottom: 20px; }
-        select, button { padding: 10px 15px; border-radius: 8px; border: 1px solid #1a73e8; cursor: pointer; font-weight: bold; }
-        button { background-color: #1a73e8; color: white; }
-        textarea { width: 100%; max-width: 800px; height: 200px; padding: 15px; border-radius: 10px; border: 1px solid #ccc; font-family: monospace; }
-        #result-container { margin-top: 20px; text-align: left; max-width: 800px; margin: 20px auto; }
-        #copyBtn { display: none; margin-top: 10px; background-color: #34a853; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; }
-        body.dark-mode { background-color: #121212; color: white; }
+        body { font-family: 'Segoe UI', sans-serif; background: #0f0f0f; color: #fff; margin: 0; padding: 20px; display: flex; flex-direction: column; align-items: center; }
+        .container { width: 100%; max-width: 900px; }
+        h1 { text-align: center; }
+        textarea { width: 100%; height: 250px; background: #1a1a1a; color: #fff; border: 1px solid #444; padding: 15px; border-radius: 10px; font-family: 'Courier New', monospace; font-size: 14px; resize: vertical; }
+        .toolbar { display: flex; flex-wrap: wrap; gap: 10px; margin: 20px 0; justify-content: center; }
+        select, button { padding: 12px 20px; border-radius: 8px; border: none; cursor: pointer; font-weight: bold; }
+        select { background: #333; color: white; }
+        button { background: #4a90e2; color: white; transition: 0.3s; }
+        button:hover { background: #357abd; }
+        .btn-dark { background: #555; }
+        .result-box { position: relative; background: #1a1a1a; padding: 20px; border-radius: 10px; border: 1px solid #444; margin-top: 20px; }
+        pre { overflow-x: auto; }
+        .action-btns { position: absolute; top: 10px; right: 10px; display: flex; gap: 5px; }
+        .mini-btn { background: #444; padding: 5px 10px; font-size: 12px; border-radius: 4px; cursor: pointer; }
     </style>
 </head>
 <body>
 
-    <h1>CleanCodeHub</h1>
-
+<div class="container">
+    <h1>Clean Code Hub Pro</h1>
+    
+    <!-- टाइपिंग और एडिटिंग एरिया -->
+    <textarea id="codeInput" placeholder="यहाँ अपना कोड पेस्ट करें या टाइप करें..."></textarea>
+    
     <div class="toolbar">
         <select id="sourceLang">
-            <option value="json">JSON</option>
-            <option value="python">Python</option>
-            <option value="javascript">JavaScript</option>
-            <option value="cpp">C++</option>
-            <option value="java">Java</option>
+            <option value="JavaScript">JavaScript</option><option value="Python">Python</option>
+            <option value="Java">Java</option><option value="C++">C++</option><option value="HTML">HTML</option>
         </select>
-        <span>में बदलें</span>
+        <span>➡</span>
         <select id="targetLang">
-            <option value="json">JSON</option>
-            <option value="python">Python</option>
-            <option value="javascript">JavaScript</option>
-            <option value="cpp">C++</option>
-            <option value="java">Java</option>
+            <option value="Python">Python</option><option value="JavaScript">JavaScript</option>
+            <option value="Java">Java</option><option value="C++">C++</option>
         </select>
+        <button onclick="convertCode()">🚀 सर्च / कन्वर्ट</button>
+        <button class="btn-dark" onclick="toggleDarkMode()">🌙 डार्क/लाइट</button>
+    </div>
+
+    <div class="result-box">
+        <div class="action-btns">
+            <span class="mini-btn" onclick="copyResult()">Copy</span>
+            <span class="mini-btn" onclick="clearAll()">Clear</span>
+        </div>
+        <pre><code id="result" class="language-javascript">यहाँ आपका रिजल्ट दिखेगा...</code></pre>
+    </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+<script>
+    function toggleDarkMode() { document.body.style.background = (document.body.style.background === "white") ? "#0f0f0f" : "white"; document.body.style.color = (document.body.style.color === "black") ? "white" : "black"; }
+    
+    async function convertCode() {
+        let res = document.getElementById('result');
+        let code = document.getElementById('codeInput').value;
+        let to = document.getElementById('targetLang').value;
+        res.textContent = "AI प्रोसेस कर रहा है...";
         
-        <button onclick="processCode('clean')">क्लीन</button>
-        <button onclick="processCode('minify')">मिनीफाई</button>
-        <button onclick="processCode('convert')">कन्वर्ट</button>
-        <button onclick="toggleDarkMode()">डार्क मोड</button>
-    </div>
+        const response = await fetch('/api/convert', {
+            method: 'POST',
+            body: JSON.stringify({ code: code, targetLang: to })
+        });
+        const data = await response.json();
+        res.textContent = data.result;
+        Prism.highlightAll();
+    }
 
-    <textarea id="codeInput" placeholder="अपना कोड यहाँ पेस्ट करें..."></textarea>
-
-    <div id="result-container">
-        <pre><code id="result" class="language-javascript"></code></pre>
-        <button id="copyBtn" onclick="copyCode()">कॉपी करें</button>
-    </div>
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
-    <script>
-        function toggleDarkMode() { document.body.classList.toggle('dark-mode'); }
-
-        function processCode(action) {
-            let input = document.getElementById('codeInput').value;
-            let src = document.getElementById('sourceLang').value;
-            let target = document.getElementById('targetLang').value;
-            let res = document.getElementById('result');
-            
-            if(!input.trim()) { alert("कोड तो डालो भाई!"); return; }
-
-            let output = "";
-            if(action === 'clean') {
-                output = input.split('\n').map(l => l.trim()).filter(l => l !== "").join('\n');
-            } else if(action === 'minify') {
-                output = input.replace(/\s+/g, ' ').trim();
-            } else if(action === 'convert') {
-                output = `// ${src} से ${target} में बदलना बाकी है... \n// लॉजिक: ${input}`;
-            }
-
-            res.textContent = output;
-            document.getElementById('copyBtn').style.display = "block";
-            Prism.highlightElement(res);
-        }
-
-        function copyCode() {
-            navigator.clipboard.writeText(document.getElementById('result').textContent);
-            alert("कोड कॉपी हो गया!");
-        }
-    </script>
+    function copyResult() { navigator.clipboard.writeText(document.getElementById('result').textContent); alert("कॉपी हो गया!"); }
+    function clearAll() { document.getElementById('codeInput').value = ""; document.getElementById('result').textContent = ""; }
+</script>
 </body>
 </html>
