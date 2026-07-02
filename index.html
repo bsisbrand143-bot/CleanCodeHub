@@ -3,15 +3,17 @@
 <html lang="hi">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CleanCodeHub - Pro</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
     <style>
-        body { font-family: sans-serif; background-color: #f8f9fa; display: flex; flex-direction: column; align-items: center; padding: 20px; transition: background 0.3s; }
-        .lang-group, .action-group { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; justify-content: center; }
-        button { padding: 10px 20px; border-radius: 20px; border: 2px solid #1a73e8; background: white; color: #1a73e8; font-weight: bold; cursor: pointer; }
-        button.active { background-color: #1a73e8; color: white; }
-        textarea { width: 100%; max-width: 700px; height: 200px; padding: 20px; border-radius: 20px; border: 1px solid #ddd; }
-        #result { width: 100%; max-width: 700px; padding: 20px; background-color: #eee; border-radius: 20px; margin-top: 20px; white-space: pre-wrap; font-family: monospace; }
+        body { font-family: 'Segoe UI', sans-serif; background-color: #f4f4f9; padding: 20px; text-align: center; transition: 0.3s; }
+        .toolbar { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-bottom: 20px; }
+        select, button { padding: 12px 20px; border-radius: 8px; border: none; cursor: pointer; font-weight: bold; }
+        button { background-color: #1a73e8; color: white; }
+        textarea { width: 100%; max-width: 800px; height: 200px; padding: 15px; border-radius: 10px; border: 1px solid #ccc; font-family: monospace; }
+        #result-container { margin-top: 20px; text-align: left; max-width: 800px; margin: 20px auto; position: relative; }
+        #copyBtn { display: none; margin-top: 10px; background-color: #34a853; }
+        pre { border-radius: 10px; }
         body.dark-mode { background-color: #121212; color: white; }
     </style>
 </head>
@@ -19,55 +21,54 @@
 
     <h1>CleanCodeHub</h1>
 
-    <!-- भाषा के बटन ऊपर -->
-    <div class="lang-group">
-        <button onclick="selectLang(this, 'JSON')">JSON</button>
-        <button onclick="selectLang(this, 'HTML')">HTML</button>
-        <button onclick="selectLang(this, 'CSS')">CSS</button>
-        <button onclick="selectLang(this, 'Python')">Python</button>
-    </div>
-
-    <textarea id="codeInput" placeholder="अपना कोड यहाँ डालें..."></textarea>
-
-    <!-- एक्शन बटन नीचे -->
-    <div class="action-group" style="margin-top: 20px;">
+    <div class="toolbar">
+        <select id="langSelect">
+            <option value="json">JSON</option>
+            <option value="html">HTML</option>
+            <option value="css">CSS</option>
+            <option value="python">Python</option>
+        </select>
+        <button onclick="processCode('clean')">क्लीन</button>
+        <button onclick="processCode('minify')">मिनीफाई</button>
+        <button onclick="processCode('convert')">कन्वर्ट</button>
         <button onclick="toggleDarkMode()">डार्क मोड</button>
-        <button onclick="cleanCode()" style="background-color: #1a73e8; color: white;">क्लीन करें</button>
-        <button onclick="copyCode()" style="background-color: #34a853; color: white;">कॉपी करें</button>
     </div>
 
-    <pre id="result">रिजल्ट यहाँ दिखेगा...</pre>
+    <textarea id="codeInput" placeholder="अपना कोड यहाँ पेस्ट करें..."></textarea>
 
+    <div id="result-container">
+        <pre><code id="result" class="language-javascript"></code></pre>
+        <button id="copyBtn" onclick="copyCode()">कॉपी करें</button>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
     <script>
-        let selectedLang = 'JSON';
-
-        function selectLang(btn, lang) {
-            document.querySelectorAll('.lang-group button').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-            selectedLang = lang;
-        }
-
         function toggleDarkMode() { document.body.classList.toggle('dark-mode'); }
 
-        function cleanCode() {
+        function processCode(action) {
             let input = document.getElementById('codeInput').value;
-            if (!input.trim()) { alert("पहले कोड तो डालो भाई!"); return; }
+            let lang = document.getElementById('langSelect').value;
+            let res = document.getElementById('result');
             
-            let result = "";
-            if (selectedLang === 'JSON') {
-                try {
-                    let obj = JSON.parse(input);
-                    result = JSON.stringify(obj, null, 4);
-                } catch(e) { result = "Error: गलत JSON है!"; }
+            if(!input.trim()) { alert("भाई, कोड तो डालो!"); return; }
+
+            let output = "";
+            if(action === 'clean') {
+                output = input.split('\n').map(l => l.trim()).filter(l => l !== "").join('\n');
+            } else if(action === 'minify') {
+                output = input.replace(/\s+/g, ' ').trim();
             } else {
-                result = input.split('\n').map(l => l.trim()).filter(l => l !== "").join('\n');
+                output = "कन्वर्ट फीचर जल्द ही अपडेट होगा!";
             }
-            document.getElementById('result').textContent = result;
+
+            res.textContent = output;
+            document.getElementById('copyBtn').style.display = "block";
+            Prism.highlightElement(res);
         }
 
         function copyCode() {
             navigator.clipboard.writeText(document.getElementById('result').textContent);
-            alert("कॉपी हो गया!");
+            alert("कोड कॉपी हो गया!");
         }
     </script>
 </body>
