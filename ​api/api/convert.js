@@ -1,4 +1,4 @@
-import { open chatgptAI } from "@google/generative-ai";
+import { open chatgptAI } from @chatgpt/generative-ai";
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
