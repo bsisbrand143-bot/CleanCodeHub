@@ -29,7 +29,7 @@ Facebook: [Puja Mehra]
 
 <div class="container">
     <h1>Clean Code Hub Pro</h1>
-    <textarea id="codeInput" placeholder="अपना कोड यहाँ लिखें या पेस्ट करें... (AI अपने आप आपकी भाषा पहचान लेगा)"></textarea>
+    <textarea id="codeInput" placeholder=""></textarea>
     
     <div class="toolbar">
         <span style="font-weight: bold; font-size: 15px;">इस भाषा में बदलें:</span>
@@ -48,7 +48,7 @@ Facebook: [Puja Mehra]
             <span class="mini-btn" onclick="copyResult()">Copy</span>
             <span class="mini-btn" onclick="clearAll()">Clear</span>
         </div>
-        <pre><code id="result" class="language-javascript">यहाँ आपका बदला हुआ कोड रंगीन दिखेगा...</code></pre>
+        <pre><code id="result" class="language..</code></pre>
     </div>
 </div>
 
@@ -59,12 +59,12 @@ Facebook: [Puja Mehra]
         let codeValue = document.getElementById('codeInput').value.trim();
         
         if(!codeValue) {
-            alert("कृपया पहले बॉक्स में कोई कोड टाइप करें या पेस्ट करें!");
+            alert(");
             return;
         }
 
-        // Gemini जैसा लोडिंग एनीमेशन चालू
-        res.innerHTML = '<div class="spinner"></div><p style="text-align:center; margin:0;">AI कोड बदल रहा है, कृपया रुकें...</p>';
+     
+        res.innerHTML = '<div class="spinner"></div><p style="text-align:cente
         
         try {
             const response = await fetch('/api/convert', {
@@ -84,14 +84,13 @@ Facebook: [Puja Mehra]
                 res.textContent = "Error: " + data.error;
             } else {
                 res.textContent = data.result;
-                Prism.highlightAll(); // रंगीन करने के लिए
+                Prism.highlightAll(); // र
             }
         } catch (e) {
-            res.textContent = "Error: API से कनेक्ट नहीं हो पाया। कृपया सुनिश्चित करें कि Vercen में Environment Variable सेट है।";
+            res.textContent = ;
         }
     }
-    function copyResult() { navigator.clipboard.writeText(document.getElementById('result').textContent); alert("कोड कॉपी हो गया!"); }
-    function clearAll() { document.getElementById('codeInput').value = ""; document.getElementById('result').textContent = "यहाँ आपका बदला हुआ कोड रंगीन दिखेगा..."; }
+    function copyResult() { navigator.clipboard.writeText(document.getElementById('result').textContent); aler; }
 </script>
 </body>
 </html>
